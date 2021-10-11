@@ -21,7 +21,7 @@ ingress:
 
 persistence:
   data:
-    enabled: false
+    enabled: true
     mountPath: "/opt/magic_mirror/modules/custom"
 
 # Contents of your custom.css
@@ -34,9 +34,129 @@ config: |
     port: 8080,
     ipWhitelist: [],
     language: "en",
-    timeFormat: 24,
+    timeFormat: 12,
     units: "metric",
-    modules: [],
+    	modules: [
+		/*
+		{
+			module: "updatenotification",
+			position: "top_bar"
+		},*/
+		{
+			module: "clock",
+			position: "top_left"
+		},
+
+		{
+        	        module: 'MMM-CountDown',
+			position: "bottom_left",
+            		config: {
+				event: "Baby Selassie Blessing",
+				date: "2021-10-31",
+				showHours: false,
+				showMinutes: false,
+				showSeconds: false
+            		}
+        	},
+
+		/*
+		{
+			module: "compliments",
+			position: "lower_third"
+		},*/
+		{
+			module: "weather",
+			position: "top_right",
+			config: {
+				weatherProvider: "openweathermap",
+				type: "current",
+				location: "Rexburg",
+				locationID: "5605242", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
+				apiKey: "798b2b5256c7103d3a1369225acfea0a"
+			}
+		},
+		{
+			module: "weather",
+			position: "top_right",
+			header: "Weather Forecast",
+			config: {
+				weatherProvider: "openweathermap",
+				type: "forecast",
+				location: "Rexburg",
+				locationID: "5605242", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
+				apiKey: "798b2b5256c7103d3a1369225acfea0a"
+			}
+		},
+
+
+		/*{
+  			module: "calendar",
+  			position: "lower_third",
+
+  			config: {
+    				calendars: [
+      				{
+        				url: "https://calendar.google.com/calendar/ical/vkju9aljg7ha1ah8h5ecne6vj0ivgj84%40import.calendar.google.com/public/basic.ics"
+      				},
+
+    				]
+  			}
+		},*/
+		{
+ 			module: "MMM-MyWordOfTheDay",
+  			position: "middle_center",
+  			header: "Word Of The Day",
+  			config: {
+    				apiKey: "lmp1d0dftrkuh3o8t1jkpvrh7dabetdzwvvdyawabl2tc4ptt" //private; don't share.
+  			}
+		},
+		{
+			module: 'MMM-WiFiPassword',
+	    		position: "bottom_right",
+	      		config: {
+		        	//See 'Configuration options' for more information.
+			        network: "NETGEAR68-5G", 
+		        	password: "delightfulsky620",
+			}
+  		},
+
+		/*{
+			module: "MMM-CalendarWeek",
+			position: "middle_center",
+			config: {
+				colored: false,
+				coloredSymbolOnly: false,
+				symbol: 'calendar',
+				calendars: [
+					{
+					url: "https://calendar.google.com/calendar/ical/vkju9aljg7ha1ah8h5ecne6vj0ivgj84%40import.calendar.google.com/public/basic.ics",
+					auth: {
+						user: 'wmsmckay',
+						pass: 'eightBa11',
+						method:'basic'
+					}
+				},
+				],
+			}
+		}*/
+		/*
+		{
+			module: "newsfeed",
+			config: {
+				feeds: [
+					{
+						title: "New York Times",
+						url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+					}
+				],
+				showSourceTitle: true,
+				showPublishDate: true,
+				broadcastNewsFeeds: true,
+				broadcastNewsUpdates: true
+			}
+		}
+		*/
+	],
   };
 
   /*************** DO NOT EDIT THE LINE BELOW ***************/
