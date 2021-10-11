@@ -1,93 +1,123 @@
-# **MagicMirror²**
+# magic-mirror
 
-is an open source modular smart mirror platform. For more info visit the [project website](https://github.com/MichMich/MagicMirror).
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![AppVersion: v2.14.0](https://img.shields.io/badge/AppVersion-v2.14.0-informational?style=flat-square)
 
-# Introduction
+magic-mirror helm package
 
-This helm chart bootstraps a MagicMirror instance.
+**This chart is not maintained by the upstream project and any issues with the chart should be raised [here](https://github.com/k8s-at-home/charts/issues/new/choose)**
 
-> 👉 The project is very young so don't expect everything works already ...
+## Source Code
 
-# Restrictions
+* <https://github.com/MichMich/MagicMirror>
+* <https://hub.docker.com/r/bastilimbach/docker-magicmirror>
 
-A normal MagicMirror setup uses a raspberry pi as hardware. If you want to run the application without output on the screen of the pi, you can run it [server only](https://docs.magicmirror.builders/getting-started/installation.html#usage) and open MagicMirror with a web browser.
+## Requirements
 
-As the most k8s clusters are not running on raspberry pi's, here the `server only` setup of MagicMirror is used.
+Kubernetes: `>=1.16.0-0`
 
-> ❌ This implies that no modules can be used which need raspberry pi specific hardware (e.g. GPIO).
+## Dependencies
 
-# Prerequisites
+| Repository | Name | Version |
+|------------|------|---------|
+| https://library-charts.k8s-at-home.com | common | 1.0.0 |
 
-* Running Kubernetes Cluster
-* Helm
+## TL;DR
 
-# Installing the chart
-
-To install the chart:
-
-```bash
-$ git clone https://gitlab.com/khassel/magicmirror-helm.git
-$ cd magicmirror-helm
-$ helm upgrade magicmirror -i .
+```console
+helm repo add k8s-at-home https://k8s-at-home.com/charts/
+helm repo update
+helm install magic-mirror k8s-at-home/magic-mirror
 ```
 
-The above command deploys MagicMirror on the Kubernetes cluster in a default configuration (with default modules).
+## Installing the Chart
 
-# Uninstalling the chart
+To install the chart with the release name `magic-mirror`
 
-To uninstall/delete the deployment:
-
-```bash
-$ helm ls
-NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-magicmirror     default         3               2020-06-03 21:27:57.417308079 +0000 UTC deployed        magicmirror-1.0.0       1.0
-
-$ helm delete magicmirror
+```console
+helm install magic-mirror k8s-at-home/magic-mirror
 ```
 
-# Configuration
+## Uninstalling the Chart
 
-The following table lists the configurable parameters of the MagicMirror chart and their default values. Some default values which are present in every deployment are omitted.
+To uninstall the `magic-mirror` deployment
 
-| Parameter                             | Description                                                                  | Default                                        |
-| ------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- |
-| `image`                               | image with tag                                                               | `karsten13/magicmirror:alpine`                 |
-| `imagePullPolicy`                     | Image pull policy                                                            | `Always`                                       |
-| `ingress.enabled`                     | Flag for enabling ingress                                                    | false                                          |
-| `ingress.type`                        | traefik or nginx                                                             | `traefik`                                      |
-| `ingress.hostname`                    | hostname running MagicMirror                                                 |                                                |
-| `ingress.path`                        | subPath running MagicMirror                                                  | `/mm`                                          |
-| `ingress.tls`                         | Flag for enabling tls                                                        | false                                          |
-| `service.type`                        | service type                                                                 | `ClusterIP`                                    |
-| `service.port`                        | service port                                                                 | `8080`                                         |
-| `env`                                 | list of environment variables                                                | `[]`                                           |
-| `modules.install`                     | list of (foreign) modules to install                                         | `[]`                                           |
-| `config`                              | the config part of MagicMirror, part of `config.js` file                     | content of default `config.js` file            |
-| `css`                                 | custom css, normally defined in `custom.css` file                            | empty                                          |
-| `persistence.enabled`                 | enables persistent volume for modules                                        | false                                          |
+```console
+helm uninstall magic-mirror
+```
 
-For overriding variables see: [Customizing the chart](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
+The command removes all the Kubernetes components associated with the chart **including persistent volumes** and deletes the release.
 
-The current setup uses [traefik](https://github.com/containous/traefik-helm-chart) as ingress, for using nginx-ingress you have to change `ingress.type`.
-You can also run without ingress, then you have to disable ingress (`ingress.enabled=false`) and setup the service as `LoadBalancer`, see example in `values.yaml`.
-With the default setup your MagicMirror ist running under `http://<your-ip-address-or-hostname>/mm/`.
+## Configuration
 
-# MagicMirror configuration: Config, custom CSS and Modules
+Read through the [values.yaml](./values.yaml) file. It has several commented out suggested values.
+Other values may be used from the [values.yaml](https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common/values.yaml) from the [common library](https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common).
 
-The configuration normally found in a `config.js` is done in the `values.yaml` in the `config` section. You find more information [here](https://docs.magicmirror.builders/getting-started/configuration.html#general).
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-The css configuration normally found in a `custom.css` file is done in the `values.yaml` in the `css` section. This is used to override your modules' appearance. CSS basics are documented
-[here](https://forum.magicmirror.builders/topic/6808/css-101-getting-started-with-css-and-understanding-how-css-works), among many other places.
+```console
+helm install magic-mirror \
+  --set env.TZ="America/New York" \
+    k8s-at-home/magic-mirror
+```
 
-Foreign modules are installed by editing the `modules.install` section in the `values.yaml`, the default modules are described [here](https://docs.magicmirror.builders/modules/introduction.html).
+Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart.
 
-It is a good idea to not edit the `values.yaml` but bring your own yaml file with your changes only as in the following example.
+```console
+helm install magic-mirror k8s-at-home/magic-mirror -f values.yaml
+```
 
-The [`example.yaml`](./example.yaml) has a default config without the weather modules and 2 foreign modules.
+## Custom configuration
 
-For starting with this example use `helm upgrade magicmirror -i -f example.yaml .`.
+The default login details (change ASAP) are:
 
-# Persistence for Modules
+* password:deluge
 
-The above approach of installing modules does the install on every start, so with every start a `git clone` and `npm install` is run for every module. So you have always the newest versions of the modules, but the start needs additional time.
-If you want to maintain the modules yourself on a persistent volume, you can use the `persistence` section in the `values.yaml`.
+## Values
+
+**Important**: When deploying an application Helm chart you can add more values from our common library chart [here](https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common)
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| config | string | `"var config = {\n  address: \"0.0.0.0\",\n  port: 8080,\n  ipWhitelist: [],\n  language: \"en\",\n  timeFormat: 24,\n  units: \"metric\",\n  modules: [],\n};\n\n/*************** DO NOT EDIT THE LINE BELOW ***************/\nif (typeof module !== \"undefined\") {module.exports = config;}\n"` |  |
+| custom_css | string | `""` |  |
+| env | object | `{}` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"bastilimbach/docker-magicmirror"` |  |
+| image.tag | string | `"v2.14.0"` |  |
+| ingress.enabled | bool | `false` |  |
+| persistence.data.enabled | bool | `false` |  |
+| persistence.data.mountPath | string | `"/opt/magic_mirror/modules/custom"` |  |
+| service.port.port | int | `8080` |  |
+| strategy.type | string | `"Recreate"` |  |
+
+## Changelog
+
+All notable changes to this application Helm chart will be documented in this file but does not include changes from our common library. To read those click [here](https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common#changelog).
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+### [1.0.0]
+
+#### Added
+
+- N/A
+
+#### Changed
+
+- N/A
+
+#### Removed
+
+- N/A
+
+[1.0.0]: #1.0.0
+
+## Support
+
+- See the [Docs](https://docs.k8s-at-home.com/our-helm-charts/getting-started/)
+- Open an [issue](https://github.com/k8s-at-home/charts/issues/new/choose)
+- Ask a [question](https://github.com/k8s-at-home/organization/discussions)
+- Join our [Discord](https://discord.gg/sTMX7Vh) community
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.5.0](https://github.com/norwoodj/helm-docs/releases/v1.5.0)

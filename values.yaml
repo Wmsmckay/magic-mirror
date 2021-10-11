@@ -1,145 +1,51 @@
-image: karsten13/magicmirror:alpine
-imagePullPolicy: Always
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common/values.yaml
+#
 
-replicaCount: 1
+image:
+  repository: bastilimbach/docker-magicmirror
+  pullPolicy: IfNotPresent
+  tag: v2.14.0
 
-# This will use the default deployment strategy unless it is overriden
-deploymentStrategy: {}
-
-# Set security context for MagicMirror pod
-securityContext:
-  fsGroup: 1000
-  runAsUser: 1000
-  runAsGroup: 1000
-
-# if running without ingress:
-# run service as loadbalancer, your can access your MagicMirror under 192.168.0.38:8080
-# service:
-#   type: LoadBalancer
-#   port: 8080
-#   externalIPs:
-#     - 192.168.0.38
+strategy:
+  type: Recreate
 
 service:
-  type: ClusterIP
-  port: 8080
+  port:
+    port: 8080
 
 ingress:
-  # type: "nginx"
-  type: "traefik"
-  enabled: true
-  hostname: ""
-  path: "/mm"
-  tls: false
-
-# Environment variables to attach to the pods
-env: []
-#   - name: TZ
-#     value: Europe/Berlin
+  enabled: false
 
 persistence:
-  enabled: false
-  ## Set annotations on pvc
-  annotations: {}
-  ## Specify an existing volume claim instead of creating a new one.
-  ## When using this option all following options like storageClass, accessMode and size are ignored.
-  # existingClaim:
+  data:
+    enabled: false
+    mountPath: "/opt/magic_mirror/modules/custom"
 
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  storageClass:
-  accessMode: ReadWriteOnce
-  size: 1Gi
-  # hostPath: /home
-  # persistentVolumeReclaimPolicy: Recycle
+# Contents of your custom.css
+custom_css: ""
 
-# List of modules to install.
-modules:
-  install: []
-# For example:
-# modules:
-#   install:
-#     - "https://gitlab.com/khassel/MMM-RepoStats"
-#     - "https://github.com/jalibu/MMM-RAIN-MAP"
-
+# Contents of your config.js
 config: |
-  language: "en",
-  locale: "en-US",
-  logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
-  timeFormat: 24,
-  units: "metric",
-  modules: [
-    {
-      module: "alert",
-    },
-    {
-      module: "updatenotification",
-      position: "top_bar"
-    },
-    {
-      module: "clock",
-      position: "top_left"
-    },
-    {
-      module: "calendar",
-      header: "US Holidays",
-      position: "top_left",
-      config: {
-        calendars: [
-          {
-            symbol: "calendar-check",
-            url: "webcal://www.calendarlabs.com/ical-calendar/ics/76/US_Holidays.ics"					}
-        ]
-      }
-    },
-    {
-      module: "compliments",
-      position: "lower_third"
-    },
-    {
-      module: "weather",
-      position: "top_right",
-      config: {
-        weatherProvider: "openweathermap",
-        type: "current",
-        location: "New York",
-        locationID: "5128581", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
-        apiKey: "YOUR_OPENWEATHER_API_KEY"
-      }
-    },
-    {
-      module: "weather",
-      position: "top_right",
-      header: "Weather Forecast",
-      config: {
-        weatherProvider: "openweathermap",
-        type: "forecast",
-        location: "New York",
-        locationID: "5128581", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
-        apiKey: "YOUR_OPENWEATHER_API_KEY"
-      }
-    },
-    {
-      module: "newsfeed",
-      position: "bottom_bar",
-      config: {
-        feeds: [
-          {
-            title: "New York Times",
-            url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
-          }
-        ],
-        showSourceTitle: true,
-        showPublishDate: true,
-        broadcastNewsFeeds: true,
-        broadcastNewsUpdates: true
-      }
-    },
-  ]
+  var config = {
+    address: "0.0.0.0",
+    port: 8080,
+    ipWhitelist: [],
+    language: "en",
+    timeFormat: 24,
+    units: "metric",
+    modules: [],
+  };
 
-css: |
-  /* put your custom css here */
+  /*************** DO NOT EDIT THE LINE BELOW ***************/
+  if (typeof module !== "undefined") {module.exports = config;}
+
+env: {}
+  ## Optional ENV Vars that can be set.
+  ## All values below are the current default values.
+  # PUID: "1000"
+  # PGID: "1000"
+  # TZ: "Europe/Oslo"
+  # UMASK_SET: "022"

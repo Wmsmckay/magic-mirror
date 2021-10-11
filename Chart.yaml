@@ -1,5 +1,19 @@
-apiVersion: v1
-appVersion: "1.0"
-description: Helm chart for magicmirror
-name: magicmirror
-version: 1.0.0
+apiVersion: v2
+appVersion: v2.14.0
+dependencies:
+- name: common
+  repository: https://library-charts.k8s-at-home.com
+  version: 2.0.1
+description: magic-mirror helm package
+home: https://github.com/k8s-at-home/charts/tree/master/charts/magic-mirror
+keywords:
+- magic-mirror
+kubeVersion: '>=1.16.0-0'
+maintainers:
+- email: anders@brujordet.no
+  name: brujoand
+name: magic-mirror
+sources:
+- https://github.com/MichMich/MagicMirror
+- https://hub.docker.com/r/bastilimbach/docker-magicmirror
+version: 2.0.1
